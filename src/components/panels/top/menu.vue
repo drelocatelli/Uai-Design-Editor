@@ -3,15 +3,18 @@ import domtoimage from 'dom-to-image';
 import { ElementD, ElementType } from '../../../store/elements';
 import useElementsStore from '../../../store/elements';
 import { computed, onMounted, ref } from 'vue';
-import Archive from '../../../utils/Archive';
-import convertCSSProperties from '../../../utils/convertCSSProperties';
 import useStatusStore from '../../../store/status';
 import useFocusStore from '../../../store/focus';
+import Konva from 'konva';
+import Archive from '../../../utils/Archive';
+import { Node } from 'konva/lib/Node';
+import { NodeConfig } from 'konva/lib/Node';
+import Constants from '../../../class/constants';
 
 const ctxMenu = ref<number | undefined>(undefined);
 const focusStore = useFocusStore();
 const statusStore = useStatusStore();
-const paintMode =  computed(() => statusStore.paint.paintMode);
+const paintMode = computed(() => statusStore.paint.paintMode);
 
 onMounted(() => {
     defineFocus();
@@ -26,7 +29,7 @@ function defineFocus() {
     });
     top.addEventListener('blur', () => {
         ctxMenu.value = undefined;
-    })
+    });
 }
 
 function defineCtxMenuPosition() {
@@ -63,7 +66,7 @@ class CtxMenuOptions {
     static insertShape(type: ElementType) {
         switch (type) {
             // case 'paint':
-                // to do
+            // to do
             // break;
             case 'text':
                 useElementsStore().insertElement({ type: 'text', text: 'Insira seu texto...' });
@@ -124,15 +127,12 @@ class CtxMenuOptions {
 
     static saveProject() {
         // save element properties on store
-        const elements = document.querySelectorAll('.element');
-        elements.forEach(element => {
-            let target = element as HTMLDivElement;
-            const id = target.dataset.id;
-            useElementsStore().setElementStyle(parseInt(id!), convertCSSProperties(target.style));
-        });
-        const data = useElementsStore().elements;
-        const blobData = Archive.createBlob(JSON.stringify({elements: data}), 'application/json');
-        Archive.download(`UAIDesign_${Date.now()}`, 'uai', blobData);
+        const data = Konva.stages[0].toJSON();
+        const dataJSON = JSON.parse(data)?.children[0]?.children;
+        if(dataJSON) {
+            const blobData = Archive.createBlob(JSON.stringify(dataJSON), 'application/json');
+            Archive.download(`UAIDesign_${Date.now()}`, 'uai', blobData);
+        }
     }
 
     static import() {
@@ -147,13 +147,15 @@ class CtxMenuOptions {
                 reader.readAsText(file);
                 reader.onload = () => {
                     const fileContent = reader.result;
-                    const jsonData = JSON.parse(fileContent as any) as {elements: ElementD[]}; // Parse the JSON data
-                    const store = useElementsStore();
-                    // reset elements then import
-                    store.resetElements();
-                    jsonData.elements.forEach(element => {
-                        store.insertElement(element);
-                    })
+                    let jsonData = JSON.parse(fileContent as any);
+                    const shapes = jsonData as Node<NodeConfig>[];
+                    shapes.forEach(shape => {
+                        //@ts-ignore
+                        const type = Constants.shapes[shape.className] == undefined ? shape.className : Constants.shapes[shape.className];
+                        if(!Constants.ignoreShapes.includes(type)) {
+                            useElementsStore().insertElement({type, attrs: shape.attrs });
+                        }
+                    });
                 };
             } else {
                 useStatusStore().setMessage('Por favor selecione um arquivo com a extensão "uai".');
@@ -163,12 +165,13 @@ class CtxMenuOptions {
                 // window.alert('Por favor selecione um arquivo com a extensão "uai".');
             }
         });
+        input.remove();
     }
 
     static centerDocument() {
         const paper = document.querySelector('.paper') as HTMLDivElement;
         paper.style.setProperty('transform', 'scale(1) translate(0, 0)');
-        console.log(paper) 
+        console.log(paper);
     }
 }
 </script>
@@ -179,12 +182,12 @@ class CtxMenuOptions {
             <div class="button icon" title="Inserir forma">
                 <i class="fa-solid fa-shapes"></i>
             </div>
-            <div class="button icon no-ctx" :class="paintMode ? 'active': ''" title="Pintar" @click="statusStore.togglePaintMode">
+            <div class="button icon no-ctx" :class="paintMode ? 'active' : ''" title="Pintar" @click="statusStore.togglePaintMode">
                 <i class="fas fa-paint-brush"></i>
             </div>
             <div class="button icon" title="Inserir texto">
                 <img src="assets/icons/Text.svg" draggable="false" />
-            </div> 
+            </div>
 
             <div class="ctx-menu" :style="{ display: ctxMenu == 0 ? 'block' : 'none' }">
                 <li :onclick="() => CtxMenuOptions.insertShape('rectangle')">Retângulo</li>

@@ -4,7 +4,7 @@ import { CSSProperties, ref } from "vue";
 interface ElementD {
     type: ElementType;
     action?: 'create' | 'update' | 'group';
-    style?: CSSProperties;
+    attrs?: any;
     text?: string;
     name?: string;
 }
@@ -14,7 +14,7 @@ type ElementType = 'rectangle' | 'circle' | 'triangle' | 'text';
 const useElementsStore = defineStore('elements', () => {
     const elements = ref<ElementD[]>([]);
     const selectedElementIdx = ref<string | undefined>(undefined);
-
+    
     function getElement(index: number) {
         const idx = elements.value.findIndex((el, i) => i == index);
         if(idx >= 0) {
@@ -50,13 +50,13 @@ const useElementsStore = defineStore('elements', () => {
         });
     }
 
-    function setElementStyle(index: number, style: CSSProperties) {
+    function setElementAttrs(index: number, style: CSSProperties) {
         getElement(index)?.then((element: ElementD) => {
-            element.style = style;
+            element.attrs = style;
         })
     }
 
-    return {elements, selectedElementIdx, insertElement, removeElement, setSelectedElement, setElementStyle, resetElements, setElementName}
+    return {elements, selectedElementIdx, insertElement, removeElement, setSelectedElement, setElementAttrs, resetElements, setElementName}
 });
 
 export type {ElementD, ElementType};

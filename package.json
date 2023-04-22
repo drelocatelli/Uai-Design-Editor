@@ -16,8 +16,7 @@
     "konva": "^9.0.1",
     "pinia": "^2.0.34",
     "sortablejs": "^1.15.0",
-    "vue": "^3.2.47",
-    "vue-konva": "^3.0.2"
+    "vue": "^3.2.47"
   },
   "devDependencies": {
     "@types/dom-to-image": "^2.6.4",
