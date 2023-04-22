@@ -1,0 +1,14 @@
+.bottom {
+    .title {
+        cursor: pointer;
+        padding: .5rem 5px;
+
+        &:hover {
+            background-color: #333;
+        }
+    }
+    
+    .content {
+        height: 277px;
+    }
+}
