@@ -10,6 +10,6 @@ const shape = computed(() => focusStore.action!.shape!);
 
 <template>
     <div class="defaultProperties">
-        <FillPicker :shape="shape" />
+        <FillPicker />
     </div>
 </template>

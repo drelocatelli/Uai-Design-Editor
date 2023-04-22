@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { IShape } from '../../../../store/focus';
+import { computed } from 'vue';
+import useFocusStore from '../../../../store/focus';
 
-const props = defineProps({shape: {required: true}});
-const shape = props.shape as IShape;
+const focusStore = useFocusStore();
+const shape = computed(() => focusStore.action!.shape!);
 
 const setFill = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    shape.setAttr('fill', target.value);
+    shape.value.setAttr('fill', target.value);
 };
 
 </script>
