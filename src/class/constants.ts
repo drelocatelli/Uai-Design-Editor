@@ -5,7 +5,7 @@ class Constants {
     static shapes = {
         Rect: 'rectangle',
         Circle: 'circle',
-        Line: 'Triangle'
+        Line: 'triangle'
     };
 
     static ignoreShapes = ['Transformer'];
