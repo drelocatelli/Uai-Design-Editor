@@ -7,6 +7,9 @@ class HandleShapes {
     static find(target: HTMLLIElement) {
         const stage = Konva.stages[0];
         const attributes = JSON.parse(target.dataset.element as string);
+        if(attributes.element.type == 'text') {
+            attributes.element.type = 'textShape'
+        }
         const shape = stage.find(`.${attributes.element.type}`).find((el) => el.attrs.id == attributes.index);
         if (shape) {
             return {
