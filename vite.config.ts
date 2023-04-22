@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import obfuscator from 'rollup-plugin-obfuscator';
 import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
@@ -15,5 +16,14 @@ export default defineConfig({
   },
   preview: {
     port: 3001
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        plugins: [
+          obfuscator()
+        ]
+      }
+    }
   }
 })
