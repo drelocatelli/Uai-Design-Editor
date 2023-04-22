@@ -1,7 +1,7 @@
 import Konva from "konva";
 import { Node, NodeConfig } from "konva/lib/Node";
 import { Stage } from "konva/lib/Stage";
-import { Transform } from "konva/lib/Util";
+import useFocusStore from "../store/focus";
 
 class HandleShapes {
     static find(target: HTMLLIElement) {
@@ -19,8 +19,11 @@ class HandleShapes {
 
     static select(target: HTMLLIElement) {
         this.find(target)?.then((stage: Stage, shape: Node<NodeConfig>) => {
+            // set transform
             const tr = stage.findOne('.transform');
             (tr as any).nodes([shape]);
+            // set action
+            useFocusStore().setActionShape({name: 'Propriedades', shape});
         });
     }
 

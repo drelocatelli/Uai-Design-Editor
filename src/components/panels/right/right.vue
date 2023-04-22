@@ -24,7 +24,7 @@ const setFocus = (e: MouseEvent) => {
                     <template v-if="actions.shape.className == 'Text'">
                         <TextShapeComponent />
                     </template>
-                    <template v-else-if="actions.shape.name() == 'shape'">
+                    <template v-else-if="actions.shape.name().toString().includes('shape')">
                         <DefaultShapeComponent />
                     </template>
                 </div>

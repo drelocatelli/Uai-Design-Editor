@@ -194,10 +194,6 @@ class Trigger extends Environment {
 
         var x1: number, y1: number, x2, y2;
 
-        this.stage.on('click', (e) => {
-            console.log('clicked on layer')
-        });
-
         this.stage.on('mousedown touchstart', (e) => {
 
             // do nothing if we mousedown on any shape
