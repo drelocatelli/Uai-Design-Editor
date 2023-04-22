@@ -46,11 +46,10 @@ class Trigger extends Environment {
             }
 
             // listen imports
-            if(value.elements.some(el => el.action == 'import')) {
+            if (value.elements.some((el) => el.action == 'import')) {
                 value.elements.forEach((element, index) => {
-                    this.insertShape({ index, element});
+                    this.insertShape({ index, element });
                 });
-                
             }
         });
     }
@@ -65,8 +64,6 @@ class Trigger extends Environment {
     }
 
     insertShape(props: { index: number; element: ElementD }) {
-
-        console.log(props.element)
         let defaultProps = {
             x: 0,
             y: 0,
@@ -76,39 +73,54 @@ class Trigger extends Environment {
             draggable: true,
             name: 'shape',
             id: props.index.toString(),
-            ...props.element.attrs,
         };
         let shape;
 
         switch (props.element.type) {
             case 'text':
-                shape = new Konva.Text({
-                    ...defaultProps,
-                    fill: '#000',
-                    fontSize: 30,
-                    text: props.element.text,
-                    name: 'shape textShape',
-                });
+                shape = new Konva.Text(
+                    props.element?.attrs
+                        ? props.element.attrs
+                        : {
+                              ...defaultProps,
+                              fill: '#000',
+                              fontSize: 30,
+                              text: props.element.text,
+                              name: 'shape textShape',
+                          },
+                );
                 break;
             case 'triangle':
-                shape = new Konva.Line({
-                    ...defaultProps,
-                    points: [100, 50, 200, 150, 0, 150],
-                    closed: true,
-                });
+                shape = new Konva.Line(
+                    props.element?.attrs
+                        ? props.element.attrs
+                        : {
+                              ...defaultProps,
+                              points: [100, 50, 200, 150, 0, 150],
+                              closed: true,
+                          },
+                );
                 break;
             case 'circle':
-                shape = new Konva.Circle({
-                    ...defaultProps,
-                    y: 100,
-                    x: 100,
-                });
+                shape = new Konva.Circle(
+                    props.element?.attrs
+                        ? props.element.attrs
+                        : {
+                              ...defaultProps,
+                              y: 100,
+                              x: 100,
+                          },
+                );
                 break;
             case 'rectangle':
             default:
-                shape = new Konva.Rect({
-                    ...defaultProps,
-                });
+                shape = new Konva.Rect(
+                    props.element?.attrs
+                        ? props.element.attrs
+                        : {
+                              ...defaultProps,
+                          },
+                );
         }
 
         this.layer.add(shape);
