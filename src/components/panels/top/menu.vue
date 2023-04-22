@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import domtoimage from 'dom-to-image';
-import { ElementD, ElementType } from '../../../store/elements';
+import { ElementType } from '../../../store/elements';
 import useElementsStore from '../../../store/elements';
 import { computed, onMounted, ref } from 'vue';
 import useStatusStore from '../../../store/status';
