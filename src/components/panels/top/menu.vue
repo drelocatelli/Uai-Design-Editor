@@ -149,13 +149,21 @@ class CtxMenuOptions {
                     const fileContent = reader.result;
                     let jsonData = JSON.parse(fileContent as any);
                     const shapes = jsonData as Node<NodeConfig>[];
-                    shapes.forEach(shape => {
+                    const shapesElements = shapes.filter(shape => {
                         //@ts-ignore
                         const type = Constants.shapes[shape.className] == undefined ? shape.className : Constants.shapes[shape.className];
                         if(!Constants.ignoreShapes.includes(type)) {
-                            useElementsStore().insertElement({type, attrs: shape.attrs });
+                            (shape as any).type = type;
+                            if(shape?.name) {
+                                (shape as any).name = shape?.name;
+                            }
+                            (shape as any).action = 'import';
+                            //@ts-ignore
+                            delete shape.className;
+                            return shape;
                         }
                     });
+                    useElementsStore().setElements(shapesElements as any);
                 };
             } else {
                 useStatusStore().setMessage('Por favor selecione um arquivo com a extensão "uai".');

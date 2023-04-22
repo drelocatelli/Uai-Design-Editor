@@ -38,11 +38,19 @@ class Trigger extends Environment {
     }
 
     listenEvents() {
-        useElementsStore().$subscribe((_, value) => {
+        useElementsStore().$subscribe((mutation, value) => {
             const newElement: ElementD = value.elements[value.elements.length - 1];
             if (newElement && newElement?.action == 'create') {
                 const index = value.elements.length - 1;
                 this.insertShape({ index, element: newElement });
+            }
+
+            // listen imports
+            if(value.elements.some(el => el.action == 'import')) {
+                value.elements.forEach((element, index) => {
+                    this.insertShape({ index, element});
+                });
+                
             }
         });
     }
@@ -57,6 +65,8 @@ class Trigger extends Environment {
     }
 
     insertShape(props: { index: number; element: ElementD }) {
+
+        console.log(props.element)
         let defaultProps = {
             x: 0,
             y: 0,
@@ -66,6 +76,7 @@ class Trigger extends Environment {
             draggable: true,
             name: 'shape',
             id: props.index.toString(),
+            ...props.element.attrs,
         };
         let shape;
 
@@ -99,6 +110,7 @@ class Trigger extends Environment {
                     ...defaultProps,
                 });
         }
+
         this.layer.add(shape);
 
         this.stage.add(this.layer);

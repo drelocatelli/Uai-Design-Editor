@@ -3,7 +3,7 @@ import { CSSProperties, ref } from "vue";
 
 interface ElementD {
     type: ElementType;
-    action?: 'create' | 'update' | 'group';
+    action?: 'create' | 'update' | 'group' | 'import';
     attrs?: any;
     text?: string;
     name?: string;
@@ -44,6 +44,10 @@ const useElementsStore = defineStore('elements', () => {
         elements.value.push({...action, action: 'create'});
     }
 
+    function setElements(payload: ElementD[]) {
+        elements.value = payload;
+    }
+
     function removeElement(index: number) {
         getElement(index)?.then((element: ElementD) => {
             elements.value.splice(index, 1)
@@ -56,7 +60,7 @@ const useElementsStore = defineStore('elements', () => {
         })
     }
 
-    return {elements, selectedElementIdx, insertElement, removeElement, setSelectedElement, setElementAttrs, resetElements, setElementName}
+    return {elements, selectedElementIdx, insertElement, removeElement, setSelectedElement, setElementAttrs, resetElements, setElementName, setElements}
 });
 
 export type {ElementD, ElementType};
