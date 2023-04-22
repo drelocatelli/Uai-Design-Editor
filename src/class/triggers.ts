@@ -101,6 +101,7 @@ class Trigger extends Environment {
                               ...defaultProps,
                               points: [100, 50, 200, 150, 0, 150],
                               closed: true,
+                              name: 'shape triangle',
                           },
                 );
                 break;
@@ -112,6 +113,7 @@ class Trigger extends Environment {
                               ...defaultProps,
                               y: 100,
                               x: 100,
+                              name: 'shape circle',
                           },
                 );
                 break;
@@ -122,6 +124,7 @@ class Trigger extends Environment {
                         ? props.element.attrs
                         : {
                               ...defaultProps,
+                              name: 'shape rectangle',
                           },
                 );
         }
@@ -137,9 +140,13 @@ class Trigger extends Environment {
         let isPainting = false;
 
         // insert transform rotate, resize
-        const tr = new Konva.Transformer();
+        const tr = new Konva.Transformer({
+            name: 'transform'
+        });
         const stageRef = this.stage;
 
+
+        // detect focus
         useFocusStore().$subscribe((_, value) => {
             if (value.action?.shape) {
                 const shape = value.action.shape;
@@ -187,7 +194,12 @@ class Trigger extends Environment {
 
         var x1: number, y1: number, x2, y2;
 
+        this.stage.on('click', (e) => {
+            console.log('clicked on layer')
+        });
+
         this.stage.on('mousedown touchstart', (e) => {
+
             // do nothing if we mousedown on any shape
             if (isPainting || e.target !== this.stage) {
                 return;

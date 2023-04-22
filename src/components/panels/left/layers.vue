@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import './layers.scss';
 import Sortable from 'sortablejs';
 import useElementsStore from '../../../store/elements';
+import HandleShapes from '../../../class/handleShapes';
 
 const elementsStore = useElementsStore();
 const elements = computed(() => [...elementsStore.elements]);
@@ -16,22 +17,9 @@ onMounted(() => {
     }
 });
 
-const getElement = (target: HTMLElement) => {
-    const findElement = document.querySelector(`.element[data-id="${target.dataset.elementidx}"]`);
-    if (findElement) {
-        return {
-            then: (callback: Function) => callback(findElement),
-        };
-    }
-};
-
 const selectElement = (e: MouseEvent) => {
-    const target = e.target as HTMLDivElement;
-    getElement(target)?.then((element: HTMLElement) => {
-        (element as HTMLButtonElement).dispatchEvent(new Event('mousedown'));
-        (element as HTMLButtonElement).dispatchEvent(new Event('click'));
-        console.log(element);
-    });
+    const target = (e.target as HTMLDivElement).closest('li') as HTMLLIElement;
+    HandleShapes.select(target);
 };
 
 const setElementName = (e: MouseEvent) => {
@@ -40,7 +28,7 @@ const setElementName = (e: MouseEvent) => {
     titleIn.removeAttribute('disabled');
     titleIn.select();
     titleIn.addEventListener('keyup', (e: KeyboardEvent) => {
-        if(e.key == 'Enter') {
+        if (e.key == 'Enter') {
             saveTitle();
         }
     });
@@ -50,8 +38,7 @@ const setElementName = (e: MouseEvent) => {
         const index = target!.dataset.elementidx;
         useElementsStore().setElementName(parseInt(index!), titleIn.value);
         titleIn.setAttribute('disabled', 'true');
-    }
-    
+    };
 };
 </script>
 
@@ -59,7 +46,7 @@ const setElementName = (e: MouseEvent) => {
     <div class="layers">
         <h4 style="text-align: center; font-weight: 500">Camadas</h4>
         <div class="list" ref="listRef">
-            <li v-for="(element, index) in elements" :data-elementidx="index" :key="index" :onclick="selectElement">
+            <li v-for="(element, index) in elements" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
                 <div>
                     <input class="titleInput" type="text" :value="element?.name ?? element.type.concat(` #${index}`)" disabled />
                 </div>
