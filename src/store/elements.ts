@@ -3,7 +3,7 @@ import { CSSProperties, ref } from "vue";
 
 interface ElementD {
     type: ElementType;
-    action?: 'create' | 'update' | 'group' | 'import';
+    action?: 'create' | 'update' | 'group' | 'import' | 'imported';
     attrs?: any;
     text?: string;
     name?: string;

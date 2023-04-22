@@ -38,7 +38,8 @@ class Trigger extends Environment {
     }
 
     listenEvents() {
-        useElementsStore().$subscribe((mutation, value) => {
+        const elementStore = useElementsStore();
+        elementStore.$subscribe((mutation, value) => {
             const newElement: ElementD = value.elements[value.elements.length - 1];
             if (newElement && newElement?.action == 'create') {
                 const index = value.elements.length - 1;
@@ -49,6 +50,7 @@ class Trigger extends Environment {
             if (value.elements.some((el) => el.action == 'import')) {
                 value.elements.forEach((element, index) => {
                     this.insertShape({ index, element });
+                    element.action = 'imported';
                 });
             }
         });
