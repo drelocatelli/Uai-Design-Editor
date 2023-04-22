@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import useFocusStore from '../../../../store/focus';
 import FillPicker from '../input/fill.vue';
 import Constants from '../../../../class/constants';
@@ -7,16 +7,7 @@ import Constants from '../../../../class/constants';
 const fontFamily = ref(null);
 const focusStore = useFocusStore();
 const shape = computed(() => focusStore.action!.shape!);
-
-onMounted(() => {
-    // insert avaialable fonts
-    Constants.availableFonts.forEach(font => {
-        const fontOptions = document.createElement('option');
-        fontOptions.innerText = font;
-        fontOptions.value = font;
-        (fontFamily.value! as HTMLSelectElement).appendChild(fontOptions);
-    });
-});
+const availableFonts = Constants.availableFonts;
 
 class Text {
     static changeText(e: Event) {
@@ -49,7 +40,11 @@ class Text {
                 :onkeyup="(e: KeyboardEvent) => {if(e.key == 'Enter') Text.changeText(e)}"
             />
             <h5>Font</h5>
-            <select ref="fontFamily" :onchange="Text.changeFontFamily"></select>
+            <select ref="fontFamily" :onchange="Text.changeFontFamily">
+                <option v-for="(item, index) in availableFonts" :key="index" :value="item" :selected="shape.getAttr('fontFamily') == item">
+                    {{ item }}
+                </option>
+            </select>
             <h5>Tamanho do texto</h5>
             <input type="number" :value="shape.getAttr('fontSize')" :oninput="Text.changeFontSize" />
         </div>
