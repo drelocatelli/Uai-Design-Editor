@@ -44,6 +44,7 @@ class Trigger extends Environment {
             if (newElement && newElement?.action == 'create') {
                 const index = value.elements.length - 1;
                 this.insertShape({ index, element: newElement });
+                newElement.action = 'created';
             }
 
             // listen imports
