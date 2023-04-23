@@ -38,6 +38,7 @@ class Trigger extends Environment {
                 if(shape?.hasName('shape')) {
                     const id = useFocusStore().$state.action?.shape?.attrs.id;
                     useElementsStore().removeElement(id);
+                    useFocusStore().resetAction();
                     shape.remove();
                     this.stage.fire('click');
                 }

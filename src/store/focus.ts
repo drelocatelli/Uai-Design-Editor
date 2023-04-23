@@ -23,7 +23,11 @@ const useFocusStore = defineStore('focus', () => {
         action.value = payload;
     }
 
-    return {action, lastFocusElement, setFocus, setActionShape};
+    function resetAction() {
+        action.value = {name: 'Ações'};
+    }
+
+    return {action, lastFocusElement, setFocus, setActionShape, resetAction};
 });
 
 export type {IShape};
