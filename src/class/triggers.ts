@@ -66,6 +66,8 @@ class Trigger extends Environment {
                     hoverRectangle.width(paddedRect.width);
                     hoverRectangle.height(paddedRect.height);
                     hoverRectangle.position({ x: paddedRect.x, y: paddedRect.y });
+                    hoverRectangle.moveToTop();
+                    target.moveToTop();
                 }
             } else {
                 hoverRectangle.visible(false);
