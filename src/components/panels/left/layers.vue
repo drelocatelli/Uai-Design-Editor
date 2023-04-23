@@ -4,9 +4,12 @@ import './layers.scss';
 import Sortable from 'sortablejs';
 import useElementsStore from '../../../store/elements';
 import HandleShapes from '../../../class/handleShapes';
+import useFocusStore from '../../../store/focus';
 
 const elementsStore = useElementsStore();
+const focusStore = useFocusStore();
 const elements = computed(() => [...elementsStore.elements]);
+const activeShapeAttr = computed((a) => focusStore.action?.shape && focusStore.action.shape);
 const listRef = ref(null);
 
 onMounted(() => {
@@ -16,6 +19,11 @@ onMounted(() => {
         });
     }
 });
+
+const isActiveShape = (name : string, index: number) => {
+    const isActive = activeShapeAttr.value?.name().endsWith(name) && activeShapeAttr.value.attrs.id == index;
+    return isActive;
+}
 
 const selectElement = (e: MouseEvent) => {
     const target = (e.target as HTMLDivElement).closest('li') as HTMLLIElement;
@@ -46,7 +54,7 @@ const setElementName = (e: MouseEvent) => {
     <div class="layers">
         <h4 style="text-align: center; font-weight: 500">Camadas</h4>
         <div class="list" ref="listRef">
-            <li v-for="(element, index) in elements" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
+            <li :class="isActiveShape(element?.name ?? element.type, index) ? 'active' : ''" v-for="(element, index) in elements" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
                 <div>
                     <input class="titleInput" type="text" :value="element?.name ?? element.type.concat(` #${index}`)" disabled />
                 </div>
