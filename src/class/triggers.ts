@@ -5,6 +5,7 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 import useFocusStore from '../store/focus';
 import useStatusStore from '../store/status';
+import { Node, NodeConfig } from 'konva/lib/Node';
 
 class Trigger extends Environment {
     layer: Layer;
@@ -19,12 +20,28 @@ class Trigger extends Environment {
         this.listenEvents();
         this.activateShapeProperties();
         this.listenHover();
+        this.detectDeletion();
     }
 
     activateShapeProperties() {
         const focusStore = useFocusStore();
         this.stage.on('mouseup', (e) => {
             focusStore.setActionShape({ name: 'Propriedades', shape: e.target });
+        });
+    }
+
+    detectDeletion() {
+        // detect deletion
+        document.addEventListener('keydown', (e) => {
+            if (e.key == 'Delete' || e.keyCode == 46) {
+                const shape = useFocusStore().$state.action?.shape;
+                if(shape?.hasName('shape')) {
+                    const id = useFocusStore().$state.action?.shape?.attrs.id;
+                    useElementsStore().removeElement(id);
+                    shape.remove();
+                    this.stage.fire('click');
+                }
+            }
         });
     }
 
@@ -69,7 +86,7 @@ class Trigger extends Environment {
                 }
             } else {
                 hoverRectangle.visible(false);
-              }
+            }
         });
 
         this.stage.on('click', (e) => {
@@ -200,6 +217,7 @@ class Trigger extends Environment {
         // detect focus
         useFocusStore().$subscribe((_, value) => {
             if (value.action?.shape) {
+                console.log(value.action.shape);
                 const shape = value.action.shape;
                 const isTextSelected = shape.attrs?.name?.includes('textShape');
                 if (isTextSelected) {
@@ -308,6 +326,8 @@ class Trigger extends Environment {
             tr.nodes(selected);
         });
 
+        const thisRef = this;
+
         // clicks should select/deselect shapes
         this.stage.on('mousedown click tap', async function (e) {
             // if we are selecting with rect, do nothing
@@ -344,7 +364,6 @@ class Trigger extends Environment {
                 // add the node into selection
                 const nodes = tr.nodes().concat([e.target]);
                 tr.nodes(nodes);
-                
             }
 
             tr.moveToTop();
