@@ -18,6 +18,7 @@ class Trigger extends Environment {
         this.shapeSelection();
         this.listenEvents();
         this.activateShapeProperties();
+        this.listenHover();
     }
 
     activateShapeProperties() {
@@ -35,6 +36,56 @@ class Trigger extends Environment {
         });
 
         return stage;
+    }
+
+    listenHover() {
+        const hoverRectangle = new Konva.Rect({
+            name: 'hoverRectangle',
+            stroke: '#25a3fc',
+            visible: false,
+            strokeWidth: 1,
+        });
+
+        this.layer.add(hoverRectangle);
+
+        // hover events
+        this.stage.on('mouseover', (e) => {
+            const target = e.target;
+            if (target?.attrs?.name?.includes('shape')) {
+                const selectionRectangle = this.stage.findOne('.selectionRectangle');
+                if (!selectionRectangle.visible()) {
+                    const targetRect = target.getClientRect();
+                    const hoverPadding = 1; // define the amount of padding to add
+                    const paddedRect = {
+                        x: targetRect.x - hoverPadding,
+                        y: targetRect.y - hoverPadding,
+                        width: targetRect.width + hoverPadding * 2,
+                        height: targetRect.height + hoverPadding * 2,
+                    };
+                    hoverRectangle.visible(true);
+                    hoverRectangle.width(paddedRect.width);
+                    hoverRectangle.height(paddedRect.height);
+                    hoverRectangle.position({ x: paddedRect.x, y: paddedRect.y });
+                }
+            } else {
+                hoverRectangle.visible(false);
+              }
+        });
+
+        this.stage.on('click', (e) => {
+            hoverRectangle.visible(false);
+        });
+
+        this.stage.on('dragmove', (e) => {
+            hoverRectangle.visible(false);
+        });
+
+        this.stage.on('mouseout', (e) => {
+            const target = e.target;
+            if (target?.attrs?.name?.includes('shape')) {
+                hoverRectangle.visible(false);
+            }
+        });
     }
 
     listenEvents() {
@@ -141,10 +192,10 @@ class Trigger extends Environment {
 
         // insert transform rotate, resize
         const tr = new Konva.Transformer({
-            name: 'transform'
+            name: 'transform',
         });
-        const stageRef = this.stage;
 
+        const stageRef = this.stage;
 
         // detect focus
         useFocusStore().$subscribe((_, value) => {
@@ -171,6 +222,9 @@ class Trigger extends Environment {
 
         this.layer.add(tr);
 
+        const transformZIndex = 10000000;
+
+        tr.zIndex(transformZIndex);
         tr.nodes([]);
 
         let selectionRectangle = new Konva.Rect({
@@ -181,6 +235,7 @@ class Trigger extends Environment {
             strokeWidth: 1,
         });
         this.layer.add(selectionRectangle);
+        selectionRectangle.zIndex(transformZIndex);
 
         const stopSelect = () => {
             tr.nodes([]);
@@ -195,7 +250,6 @@ class Trigger extends Environment {
         var x1: number, y1: number, x2, y2;
 
         this.stage.on('mousedown touchstart', (e) => {
-
             // do nothing if we mousedown on any shape
             if (isPainting || e.target !== this.stage) {
                 return;
@@ -216,6 +270,7 @@ class Trigger extends Environment {
             if (isPainting || !selectionRectangle.visible()) {
                 return;
             }
+
             e.evt.preventDefault();
             x2 = this.stage.getPointerPosition()!.x;
             y2 = this.stage.getPointerPosition()!.y;
