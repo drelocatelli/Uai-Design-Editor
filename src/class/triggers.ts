@@ -66,8 +66,6 @@ class Trigger extends Environment {
                     hoverRectangle.width(paddedRect.width);
                     hoverRectangle.height(paddedRect.height);
                     hoverRectangle.position({ x: paddedRect.x, y: paddedRect.y });
-                    hoverRectangle.moveToTop();
-                    target.moveToTop();
                 }
             } else {
                 hoverRectangle.visible(false);
@@ -224,9 +222,6 @@ class Trigger extends Environment {
 
         this.layer.add(tr);
 
-        const transformZIndex = 10000000;
-
-        tr.zIndex(transformZIndex);
         tr.nodes([]);
 
         let selectionRectangle = new Konva.Rect({
@@ -237,7 +232,6 @@ class Trigger extends Environment {
             strokeWidth: 1,
         });
         this.layer.add(selectionRectangle);
-        selectionRectangle.zIndex(transformZIndex);
 
         const stopSelect = () => {
             tr.nodes([]);
@@ -350,7 +344,10 @@ class Trigger extends Environment {
                 // add the node into selection
                 const nodes = tr.nodes().concat([e.target]);
                 tr.nodes(nodes);
+                
             }
+
+            tr.moveToTop();
         });
     }
 }
