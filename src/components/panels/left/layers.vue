@@ -9,12 +9,6 @@ import useFocusStore from '../../../store/focus';
 const elementsStore = useElementsStore();
 const focusStore = useFocusStore();
 const elements = computed(() => [...elementsStore.elements]);
-const elementsReverse = computed(() => elements.value.map((el, i) => {
-    return {
-        ...el,
-        index: i,
-    }
-}));
 const activeShapeAttr = computed((a) => focusStore.action?.shape && focusStore.action.shape);
 const listRef = ref(null);
 
@@ -61,7 +55,10 @@ const setElementName = (e: MouseEvent) => {
     <div class="layers">
         <h4 style="text-align: center; font-weight: 500">Camadas</h4>
         <div class="list" ref="listRef">
-            <li :class="isActiveShape(element?.name ?? element.type, index) ? 'active' : ''" v-for="(element, index) in elementsReverse" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
+            <template v-for="(elementReverse, index) in elements">
+                {{ elementReverse }}
+            </template>
+            <li :class="isActiveShape(element?.name ?? element.type, index) ? 'active' : ''" v-for="(element, index) in elements" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
                 <div>
                     <input class="titleInput" type="text" :value="element?.name ?? element.type.concat(` #${index}`)" disabled />
                     {{ elements.reverse()[index].name }}
