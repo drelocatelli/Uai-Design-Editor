@@ -55,9 +55,6 @@ const setElementName = (e: MouseEvent) => {
     <div class="layers">
         <h4 style="text-align: center; font-weight: 500">Camadas</h4>
         <div class="list" ref="listRef">
-            <template v-for="(elementReverse, index) in elements">
-                {{ elementReverse }}
-            </template>
             <li :class="isActiveShape(element?.name ?? element.type, index) ? 'active' : ''" v-for="(element, index) in elements" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
                 <div>
                     <input class="titleInput" type="text" :value="element?.name ?? element.type.concat(` #${index}`)" disabled />
