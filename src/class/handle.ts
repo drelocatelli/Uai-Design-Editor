@@ -2,8 +2,9 @@ import Konva from "konva";
 import { Node, NodeConfig } from "konva/lib/Node";
 import { Stage } from "konva/lib/Stage";
 import useFocusStore from "../store/focus";
+import Constants from "./constants";
 
-class HandleShapes {
+class Handle {
     static find(target: HTMLLIElement) {
         const stage = Konva.stages[0];
         const attributes = JSON.parse(target.dataset.element as string);
@@ -30,6 +31,24 @@ class HandleShapes {
         });
     }
 
+    static async getInstalledFonts() : Promise<string[]> {
+        try {
+            if(!('queryLocalFonts' in window)) throw new Error('Não foi possível detectar fonts');
+            const response = await (window as any).queryLocalFonts();
+            const data = response.map((r: any) => r.family).reduce((unique: any, name: any) => {
+                if (!unique.includes(name)) {
+                    unique.push(name);
+                  }
+                  return unique;
+            }, []);
+            return [...Constants.availableFonts, ...data];
+        } catch(err) {
+            //@ts-ignore
+            console.error(err.name, err.message);
+            return Constants.availableFonts;
+        }
+    }
+
 }
 
-export default HandleShapes;
+export default Handle;

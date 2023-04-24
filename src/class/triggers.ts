@@ -218,7 +218,6 @@ class Trigger extends Environment {
         // detect focus
         useFocusStore().$subscribe((_, value) => {
             if (value.action?.shape) {
-                console.log(value.action.shape);
                 const shape = value.action.shape;
                 const isTextSelected = shape.attrs?.name?.includes('textShape');
                 if (isTextSelected) {

@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import './layers.scss';
 import Sortable from 'sortablejs';
 import useElementsStore from '../../../store/elements';
-import HandleShapes from '../../../class/handleShapes';
+import HandleShapes from '../../../class/handle';
 import useFocusStore from '../../../store/focus';
 
 const elementsStore = useElementsStore();

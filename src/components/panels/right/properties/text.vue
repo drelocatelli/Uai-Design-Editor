@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import useFocusStore from '../../../../store/focus';
 import FillPicker from '../input/fill.vue';
+import Handle from '../../../../class/handle';
 import Constants from '../../../../class/constants';
 
 const fontFamily = ref(null);
 const focusStore = useFocusStore();
 const shape = computed(() => focusStore.action!.shape!);
-const availableFonts = Constants.availableFonts;
+const availableFonts = ref(Constants.availableFonts);
+
+onMounted(async () => {
+    const fonts = await Handle.getInstalledFonts();
+    availableFonts.value = fonts;
+});
 
 class Text {
     static changeText(e: Event) {
