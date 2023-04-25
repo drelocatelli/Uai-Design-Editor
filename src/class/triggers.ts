@@ -58,6 +58,7 @@ class Trigger extends Environment {
                             lineJoin: 'round',
                             points: [pos.x, pos.y],
                             name: 'shape paintShape',
+                            id: `${elementStore.$state.elements.length - 1}`
                         });
                         layerRef.add(lastLine);
                     }
@@ -178,7 +179,6 @@ class Trigger extends Environment {
                 const index = value.elements.length - 1;
                 this.insertShape({ index, element: newElement });
                 newElement.action = 'created';
-                console.log(newElement)
             }
 
             // listen imports
@@ -218,6 +218,7 @@ class Trigger extends Environment {
         switch (props.element.type) {
             case 'paint':
                 shape = new Konva.Line({
+                    ...defaultProps,
                     stroke: statusStore.$state.paint.color,
                     strokeWidth: 5,
                     globalCompositeOperation: 'source-over',
