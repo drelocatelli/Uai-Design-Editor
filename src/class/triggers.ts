@@ -59,6 +59,7 @@ class Trigger extends Environment {
                             lineCap: 'round',
                             lineJoin: 'round',
                             points: [pos.x, pos.y],
+                            name: 'shape paintShape'
                         });
                         layerRef.add(lastLine);
 
