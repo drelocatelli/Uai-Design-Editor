@@ -23,14 +23,13 @@ class Trigger extends Environment {
         this.listenHover();
         this.detectDeletion();
     }
-    
-    preventSelectionOnPaint() {
-        const shapes = this.stage.find('.shape');
-        if(shapes.length > 0) {
-            shapes.forEach(shape => {
-                shape.draggable(false);
-            })
-        }
+
+    disableShapeSelection(state: boolean) {
+        state = !state;
+        this.layer.getChildren().forEach(function (shape) {
+            shape.draggable(state);
+            shape.listening(state);
+        });
     }
 
     painting() {
@@ -40,45 +39,52 @@ class Trigger extends Environment {
         const layerRef = this.layer;
 
         var lastLine: any;
+
         const elementStore = useElementsStore();
 
         statusStore.$subscribe((_, state) => {
-            const isDrawing = state.paint.isDrawing;
-
+            console.log(state.paint.paintMode)
             if (state.paint.paintMode) {
+                useFocusStore().setAction('Opções de pintura');
+                ref.disableShapeSelection(true);
+
                 this.stage.on('mousedown touchstart', function (e) {
-                    statusStore.setIsDrawing(true);
-                    var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
-                    lastLine = new Konva.Line({
-                        stroke: 'black',
-                        strokeWidth: 5,
-                        globalCompositeOperation: 'source-over',
-                        lineCap: 'round',
-                        lineJoin: 'round',
-                        points: [pos.x, pos.y],
-                    });
-                    layerRef.add(lastLine);
+                    if(state.paint.paintMode) {
+                        statusStore.setIsDrawing(true);
+                        var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
+                        lastLine = new Konva.Line({
+                            stroke: state.paint.color,
+                            strokeWidth: 5,
+                            globalCompositeOperation: 'source-over',
+                            lineCap: 'round',
+                            lineJoin: 'round',
+                            points: [pos.x, pos.y],
+                        });
+                        layerRef.add(lastLine);
+
+                    }
                 });
-    
+
                 this.stage.on('mousemove touchmove', function (e) {
                     if (!state.paint.isDrawing) {
                         return;
                     }
-                    ref.preventSelectionOnPaint();
-    
+
                     e.evt.preventDefault();
                     var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
                     var newPoints = lastLine.points().concat([pos.x, pos.y]);
                     lastLine.points(newPoints);
                     layerRef.batchDraw();
                 });
-    
+
                 this.stage.on('mouseup touchend', function (e) {
                     statusStore.setIsDrawing(false);
                 });
-
+            } else {
+                console.log('test');
+                useFocusStore().setAction('Propriedades');
+                ref.disableShapeSelection(false);
             }
-
         });
     }
 
@@ -326,7 +332,8 @@ class Trigger extends Environment {
 
         this.stage.on('mousedown touchstart', (e) => {
             // do nothing if we mousedown on any shape
-            if (e.target !== this.stage) {
+
+            if (isPainting || e.target !== this.stage) {
                 return;
             }
             e.evt.preventDefault();
@@ -335,23 +342,20 @@ class Trigger extends Environment {
             x2 = this.stage.getPointerPosition()!.x;
             y2 = this.stage.getPointerPosition()!.y;
 
-            selectionRectangle.visible(true);
+            if (useStatusStore().$state.paint.paintMode) {
+                selectionRectangle.visible(false);
+            } else {
+                selectionRectangle.visible(true);
+            }
+
             selectionRectangle.width(0);
             selectionRectangle.height(0);
         });
 
         this.stage.on('mousemove touchmove', (e) => {
-            if (isPainting) {
-                if (e.target.hasName('shape')) {
-                    e.target.draggable(false);
-                }
-                return;
-            } else {
-                e.target.draggable(true);
-            }
             // do nothing if we didn't start selection
 
-            if (!selectionRectangle.visible()) {
+            if (isPainting || !selectionRectangle.visible()) {
                 return;
             }
 
@@ -381,7 +385,7 @@ class Trigger extends Environment {
                 });
             });
             // do nothing if we didn't start selection
-            if (!selectionRectangle.visible()) {
+            if (isPainting || !selectionRectangle.visible()) {
                 return;
             }
             e.evt.preventDefault();
@@ -399,7 +403,7 @@ class Trigger extends Environment {
         // clicks should select/deselect shapes
         this.stage.on('mousedown click tap', async function (e) {
             // if we are selecting with rect, do nothing
-            if (selectionRectangle.visible()) {
+            if (isPainting || selectionRectangle.visible()) {
                 return;
             }
 
