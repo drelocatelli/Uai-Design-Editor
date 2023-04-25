@@ -9,7 +9,7 @@ interface IActionType {
 
 type IShape = Node<NodeConfig>;
 
-type IActionName = 'Ações' | 'Propriedades';
+type IActionName = 'Ações' | 'Propriedades' | 'Opções de pintura';
 
 const useFocusStore = defineStore('focus', () => {
     const lastFocusElement = ref<HTMLElement | undefined>(undefined);
@@ -23,11 +23,15 @@ const useFocusStore = defineStore('focus', () => {
         action.value = payload;
     }
 
+    function setAction(payload: IActionName) {
+        action.value = {name: payload, shape: undefined};
+    }
+
     function resetAction() {
         action.value = {name: 'Ações'};
     }
 
-    return {action, lastFocusElement, setFocus, setActionShape, resetAction};
+    return {action, lastFocusElement, setFocus, setActionShape, resetAction, setAction};
 });
 
 export type {IShape};

@@ -181,6 +181,13 @@ class CtxMenuOptions {
         paper.style.setProperty('transform', 'scale(1) translate(0, 0)');
         console.log(paper);
     }
+
+    static togglePaintMode() {
+        if(!statusStore.paint.paintMode) {
+            statusStore.setPaintMode(true);
+            useElementsStore().insertElement({type: 'paint', action: 'create'});
+        }
+    }
 }
 </script>
 
@@ -190,7 +197,7 @@ class CtxMenuOptions {
             <div class="button icon" title="Inserir forma">
                 <i class="fa-solid fa-shapes"></i>
             </div>
-            <div class="button icon no-ctx" :class="paintMode ? 'active' : ''" title="Pintar" @click="statusStore.togglePaintMode">
+            <div class="button icon no-ctx" :class="paintMode ? 'active' : ''" title="Pintar" @click="CtxMenuOptions.togglePaintMode">
                 <i class="fas fa-paint-brush"></i>
             </div>
             <div class="button icon" title="Inserir texto">

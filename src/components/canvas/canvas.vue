@@ -21,7 +21,8 @@ const setFocus = (e: MouseEvent) => {
 <template>
     <div id="environment" ref="environment" :onclick="setFocus" tabindex="0" >
         <div class="paper">
-            <div id="canvas" :style="paintMode ? { cursor: 'crosshair' } : {}"></div>
+            <div id="canvas" :style="paintMode ? { cursor: 'crosshair' } : {}">
+            </div>
         </div>
     </div>
 </template>

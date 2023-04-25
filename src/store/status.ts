@@ -6,11 +6,12 @@ type IMessage = string | null;
 interface IPaint {
     paintMode: boolean;
     isDrawing: boolean;
+    color: string;
 }
 
 const useStatusStore = defineStore('status', () => {
     const message = ref<IMessage>(null);
-    const paint = ref<IPaint>({isDrawing: false, paintMode: false});
+    const paint = ref<IPaint>({isDrawing: false, paintMode: false, color: '#000'});
 
     function setMessage(action: IMessage) {
         message.value = action;

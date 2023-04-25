@@ -5,7 +5,6 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 import useFocusStore from '../store/focus';
 import useStatusStore from '../store/status';
-import { Node, NodeConfig } from 'konva/lib/Node';
 
 class Trigger extends Environment {
     layer: Layer;
@@ -16,11 +15,75 @@ class Trigger extends Environment {
         this.stage = this.initStage();
         this.layer = this.newLayer();
         console.log(this.stage, this.layer);
+        this.painting();
         this.shapeSelection();
         this.listenEvents();
         this.activateShapeProperties();
         this.listenHover();
         this.detectDeletion();
+    }
+
+    disableShapeSelection(state: boolean) {
+        state = !state;
+        this.layer.getChildren().forEach(function (shape) {
+            shape.draggable(state);
+            shape.listening(state);
+        });
+    }
+
+    painting() {
+        const ref = this;
+        const statusStore = useStatusStore();
+        const stageRef = this.stage;
+        const layerRef = this.layer;
+
+        var lastLine: any;
+
+        const elementStore = useElementsStore();
+
+        statusStore.$subscribe((_, state) => {
+            if (state.paint.paintMode) {
+                useFocusStore().setAction('Opções de pintura');
+                ref.disableShapeSelection(true);
+
+                this.stage.on('mousedown touchstart', function (e) {
+                    if (state.paint.paintMode) {
+                        statusStore.setIsDrawing(true);
+                        var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
+                        lastLine = new Konva.Line({
+                            stroke: state.paint.color,
+                            strokeWidth: 5,
+                            globalCompositeOperation: 'source-over',
+                            lineCap: 'round',
+                            lineJoin: 'round',
+                            points: [pos.x, pos.y],
+                            name: 'shape paintShape',
+                            id: `${elementStore.$state.elements.length - 1}`
+                        });
+                        layerRef.add(lastLine);
+                    }
+                });
+
+                this.stage.on('mousemove touchmove', function (e) {
+                    if (!state.paint.isDrawing) {
+                        return;
+                    }
+
+                    e.evt.preventDefault();
+                    var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
+                    var newPoints = lastLine.points().concat([pos.x, pos.y]);
+                    lastLine.points(newPoints);
+                });
+
+                this.stage.on('mouseup touchend', function (e) {
+                    statusStore.setIsDrawing(false);
+                });
+            } else {
+                console.log('test');
+                useFocusStore().setAction('Propriedades');
+                ref.disableShapeSelection(false);
+            }
+        });
     }
 
     activateShapeProperties() {
@@ -35,7 +98,7 @@ class Trigger extends Environment {
         document.addEventListener('keydown', (e) => {
             if (e.key == 'Delete' || e.keyCode == 46) {
                 const shape = useFocusStore().$state.action?.shape;
-                if(shape?.hasName('shape')) {
+                if (shape?.hasName('shape')) {
                     const id = useFocusStore().$state.action?.shape?.attrs.id;
                     useElementsStore().removeElement(id);
                     useFocusStore().resetAction();
@@ -71,6 +134,7 @@ class Trigger extends Environment {
             const target = e.target;
             if (target?.attrs?.name?.includes('shape')) {
                 const selectionRectangle = this.stage.findOne('.selectionRectangle');
+
                 if (!selectionRectangle.visible()) {
                     const targetRect = target.getClientRect();
                     const hoverPadding = 1; // define the amount of padding to add
@@ -80,6 +144,7 @@ class Trigger extends Environment {
                         width: targetRect.width + hoverPadding * 2,
                         height: targetRect.height + hoverPadding * 2,
                     };
+
                     hoverRectangle.visible(true);
                     hoverRectangle.width(paddedRect.width);
                     hoverRectangle.height(paddedRect.height);
@@ -136,6 +201,8 @@ class Trigger extends Environment {
     }
 
     insertShape(props: { index: number; element: ElementD }) {
+        const statusStore = useStatusStore();
+
         let defaultProps = {
             x: 0,
             y: 0,
@@ -149,6 +216,18 @@ class Trigger extends Environment {
         let shape;
 
         switch (props.element.type) {
+            case 'paint':
+                shape = new Konva.Line({
+                    ...defaultProps,
+                    stroke: statusStore.$state.paint.color,
+                    strokeWidth: 5,
+                    globalCompositeOperation: 'source-over',
+                    lineCap: 'round',
+                    lineJoin: 'round',
+                    points: [0, 0],
+                    name: 'shape paintShape',
+                });
+                break;
             case 'text':
                 shape = new Konva.Text(
                     props.element?.attrs
@@ -187,7 +266,6 @@ class Trigger extends Environment {
                 );
                 break;
             case 'rectangle':
-            default:
                 shape = new Konva.Rect(
                     props.element?.attrs
                         ? props.element.attrs
@@ -198,9 +276,14 @@ class Trigger extends Environment {
                 );
         }
 
-        this.layer.add(shape);
+        if (statusStore.$state.paint.paintMode && props.element.type != 'paint') {
+            statusStore.setPaintMode(false);
+        }
 
-        this.stage.add(this.layer);
+        if (shape) {
+            this.layer.add(shape);
+            this.stage.add(this.layer);
+        }
 
         return shape;
     }
@@ -265,6 +348,7 @@ class Trigger extends Environment {
 
         this.stage.on('mousedown touchstart', (e) => {
             // do nothing if we mousedown on any shape
+
             if (isPainting || e.target !== this.stage) {
                 return;
             }
@@ -274,13 +358,19 @@ class Trigger extends Environment {
             x2 = this.stage.getPointerPosition()!.x;
             y2 = this.stage.getPointerPosition()!.y;
 
-            selectionRectangle.visible(true);
+            if (useStatusStore().$state.paint.paintMode) {
+                selectionRectangle.visible(false);
+            } else {
+                selectionRectangle.visible(true);
+            }
+
             selectionRectangle.width(0);
             selectionRectangle.height(0);
         });
 
         this.stage.on('mousemove touchmove', (e) => {
             // do nothing if we didn't start selection
+
             if (isPainting || !selectionRectangle.visible()) {
                 return;
             }
@@ -326,16 +416,14 @@ class Trigger extends Environment {
             tr.nodes(selected);
         });
 
-        const thisRef = this;
-
         // clicks should select/deselect shapes
         this.stage.on('mousedown click tap', async function (e) {
             // if we are selecting with rect, do nothing
-            if (selectionRectangle.visible()) {
+            if (isPainting || selectionRectangle.visible()) {
                 return;
             }
 
-            if (isPainting || e.target === stageRef) {
+            if (e.target === stageRef) {
                 tr.nodes([]);
                 return;
             }

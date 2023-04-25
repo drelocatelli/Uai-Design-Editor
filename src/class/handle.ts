@@ -11,7 +11,10 @@ class Handle {
         if(attributes.element.type == 'text') {
             attributes.element.type = 'textShape'
         }
-        const shape = stage.find(`.${attributes.element.type}`).find((el) => el.attrs.id == attributes.index);
+        let shape : any = stage.find(`.${attributes.element.type}`).find((el) => el.attrs.id == attributes.index);
+        if(attributes.element.type == 'paint') {
+            shape = stage.find(`.paintShape`).filter(shape => shape.attrs.id == attributes.index);
+        }
         if (shape) {
             return {
                 then: (callback: Function) => {
@@ -23,11 +26,13 @@ class Handle {
 
     static select(target: HTMLLIElement) {
         this.find(target)?.then((stage: Stage, shape: Node<NodeConfig>) => {
+            console.log(typeof shape)
             // set transform
             const tr = stage.findOne('.transform');
-            (tr as any).nodes([shape]);
+            const selectionShape = Array.isArray(shape) ? [...shape] : [shape];
+            (tr as any).nodes(selectionShape);
             // set action
-            useFocusStore().setActionShape({name: 'Propriedades', shape});
+            useFocusStore().setActionShape({name: 'Opções de pintura', shape});
         });
     }
 

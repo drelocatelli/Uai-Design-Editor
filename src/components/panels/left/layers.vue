@@ -22,7 +22,8 @@ onMounted(() => {
 
 const isActiveShape = (name : string, index: number) => {
     name = name == 'text' ? 'textShape' : name;
-    const isActive = activeShapeAttr.value?.name().endsWith(name) && activeShapeAttr.value.attrs.id == index;
+    name = name == 'paint' ?'paintShape' : name;
+    let isActive = activeShapeAttr?.value?.name()?.endsWith(name) && activeShapeAttr.value.attrs.id == index;
     return isActive;
 }
 
@@ -58,6 +59,7 @@ const setElementName = (e: MouseEvent) => {
             <li :class="isActiveShape(element?.name ?? element.type, index) ? 'active' : ''" v-for="(element, index) in elements" :data-element="JSON.stringify({ index, element })" :key="index" @click="selectElement">
                 <div>
                     <input class="titleInput" type="text" :value="element?.name ?? element.type.concat(` #${index}`)" disabled />
+                    {{ element.name }}
                 </div>
                 <div @click="setElementName" class="edit-icon">
                     <i @click.stop title="Renomear" class="fas fa-marker"></i>
