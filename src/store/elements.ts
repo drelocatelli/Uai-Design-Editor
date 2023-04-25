@@ -54,9 +54,9 @@ const useElementsStore = defineStore('elements', () => {
         });
     }
 
-    function setElementAttrs(index: number, style: CSSProperties) {
+    function setElementAttrs(index: number, attrs: any) {
         getElement(index)?.then((element: ElementD) => {
-            element.attrs = style;
+            element.attrs = attrs;
         })
     }
 

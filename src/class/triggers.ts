@@ -5,7 +5,6 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 import useFocusStore from '../store/focus';
 import useStatusStore from '../store/status';
-import { Node, NodeConfig } from 'konva/lib/Node';
 
 class Trigger extends Environment {
     layer: Layer;
@@ -43,13 +42,12 @@ class Trigger extends Environment {
         const elementStore = useElementsStore();
 
         statusStore.$subscribe((_, state) => {
-            console.log(state.paint.paintMode)
             if (state.paint.paintMode) {
                 useFocusStore().setAction('Opções de pintura');
                 ref.disableShapeSelection(true);
 
                 this.stage.on('mousedown touchstart', function (e) {
-                    if(state.paint.paintMode) {
+                    if (state.paint.paintMode) {
                         statusStore.setIsDrawing(true);
                         var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
                         lastLine = new Konva.Line({
@@ -59,10 +57,9 @@ class Trigger extends Environment {
                             lineCap: 'round',
                             lineJoin: 'round',
                             points: [pos.x, pos.y],
-                            name: 'shape paintShape'
+                            name: 'shape paintShape',
                         });
                         layerRef.add(lastLine);
-
                     }
                 });
 
@@ -75,7 +72,6 @@ class Trigger extends Environment {
                     var pos = stageRef?.getPointerPosition() ?? { x: 0, y: 0 };
                     var newPoints = lastLine.points().concat([pos.x, pos.y]);
                     lastLine.points(newPoints);
-                    layerRef.batchDraw();
                 });
 
                 this.stage.on('mouseup touchend', function (e) {
@@ -182,6 +178,7 @@ class Trigger extends Environment {
                 const index = value.elements.length - 1;
                 this.insertShape({ index, element: newElement });
                 newElement.action = 'created';
+                console.log(newElement)
             }
 
             // listen imports
@@ -204,6 +201,8 @@ class Trigger extends Environment {
     }
 
     insertShape(props: { index: number; element: ElementD }) {
+        const statusStore = useStatusStore();
+
         let defaultProps = {
             x: 0,
             y: 0,
@@ -217,6 +216,17 @@ class Trigger extends Environment {
         let shape;
 
         switch (props.element.type) {
+            case 'paint':
+                shape = new Konva.Line({
+                    stroke: statusStore.$state.paint.color,
+                    strokeWidth: 5,
+                    globalCompositeOperation: 'source-over',
+                    lineCap: 'round',
+                    lineJoin: 'round',
+                    points: [0, 0],
+                    name: 'shape paintShape',
+                });
+                break;
             case 'text':
                 shape = new Konva.Text(
                     props.element?.attrs
@@ -255,7 +265,6 @@ class Trigger extends Environment {
                 );
                 break;
             case 'rectangle':
-            default:
                 shape = new Konva.Rect(
                     props.element?.attrs
                         ? props.element.attrs
@@ -266,9 +275,14 @@ class Trigger extends Environment {
                 );
         }
 
-        this.layer.add(shape);
+        if (statusStore.$state.paint.paintMode && props.element.type != 'paint') {
+            statusStore.setPaintMode(false);
+        }
 
-        this.stage.add(this.layer);
+        if (shape) {
+            this.layer.add(shape);
+            this.stage.add(this.layer);
+        }
 
         return shape;
     }

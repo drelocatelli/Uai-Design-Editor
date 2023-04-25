@@ -15,6 +15,6 @@ const setFill = (e: Event) => {
 <template>
     <div class="label">
         <h5>Preenchimento</h5>
-        <input class="fill" type="color" :value="shape.getAttr('fill')" :oninput="setFill" />
+        <input class="fill" type="color" :value="shape?.getAttr('fill')" :oninput="setFill" />
     </div>
 </template>
