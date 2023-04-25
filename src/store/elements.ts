@@ -9,7 +9,7 @@ interface ElementD {
     name?: string;
 }
 
-type ElementType = 'rectangle' | 'circle' | 'triangle' | 'text';
+type ElementType = 'rectangle' | 'circle' | 'triangle' | 'text' | 'paint';
 
 const useElementsStore = defineStore('elements', () => {
     const elements = ref<ElementD[]>([]);
