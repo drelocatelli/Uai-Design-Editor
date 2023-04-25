@@ -49,7 +49,7 @@ const useElementsStore = defineStore('elements', () => {
     }
 
     function removeElement(index: number) {
-        getElement(index)?.then((element: ElementD) => {
+        getElement(index)?.then(() => {
             elements.value.splice(index, 1)
         });
     }

@@ -17,6 +17,10 @@ const useStatusStore = defineStore('status', () => {
         message.value = action;
     }
 
+    function setBrushColor(payload: string) {
+        paint.value.color = payload;
+    }
+
     function togglePaintMode() {
         paint.value.paintMode = !paint.value.paintMode;
     }
@@ -29,7 +33,7 @@ const useStatusStore = defineStore('status', () => {
         paint.value.isDrawing = action;
     }
 
-    return {message, paint, setMessage, togglePaintMode, setPaintMode, setIsDrawing};
+    return {message, paint, setMessage, togglePaintMode, setPaintMode, setIsDrawing, setBrushColor};
 });
 
 export default useStatusStore;
