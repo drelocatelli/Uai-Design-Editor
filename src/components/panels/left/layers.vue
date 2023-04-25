@@ -22,7 +22,8 @@ onMounted(() => {
 
 const isActiveShape = (name : string, index: number) => {
     name = name == 'text' ? 'textShape' : name;
-    const isActive = activeShapeAttr.value?.name().endsWith(name) && activeShapeAttr.value.attrs.id == index;
+    name = name == 'paint' ?'paintShape' : name;
+    let isActive = activeShapeAttr?.value?.name()?.endsWith(name) && activeShapeAttr.value.attrs.id == index;
     return isActive;
 }
 
