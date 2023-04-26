@@ -9,6 +9,7 @@ class Constants {
     };
 
     static ignoreShapes = ['Transformer'];
+    static ignoreShapeNames = ['selectionRectangle', 'hoverRectangle'];
     
 }
 
