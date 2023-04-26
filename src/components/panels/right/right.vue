@@ -30,7 +30,7 @@ const setFocus = (e: MouseEvent) => {
                             <DefaultShapeComponent />
                         </template>
                     </template>
-                    <template v-if="actions.name == 'Opções de pintura'">
+                    <template v-else-if="actions.name == 'Opções de pintura'">
                         <BrushComponent />
                     </template>
                 </div>
