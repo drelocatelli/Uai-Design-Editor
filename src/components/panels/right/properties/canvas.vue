@@ -10,14 +10,13 @@ onMounted(() => {
     paper.value = document.querySelector('.paper') as HTMLDivElement;
 });
 
-watch(() => paperColor.value, (value) => {
-    const transparencyEl = (transparencyIn.value as HTMLDivElement);
-    if(value == '#ffffff') {
-        transparencyEl.style.setProperty('background-color', 'rgb(255 255 255 / 0%)');
-    } else {
-        transparencyEl.style.setProperty('background-color', paperColor.value);
-    }
-});
+watch(
+    () => paperColor.value,
+    (value) => {
+        const transparencyEl = transparencyIn.value as HTMLDivElement;
+        transparencyEl.style.setProperty('box-shadow', `inset -30px 0px 38px ${value}, inset 4px 0px 23px rgba(255, 255, 255, 0)`);
+    },
+);
 
 const generateBgColor = (element: HTMLElement, opacity: string) => {
     let currentBgColor = getComputedStyle(element).backgroundColor;
@@ -49,13 +48,12 @@ const setPaperOpacity = (e: Event) => {
     <div class="label">
         <h5>Cor da folha</h5>
         <input class="fill" type="color" :value="paperColor" :oninput="setPaperColor" />
-        <div style="margin-top:1rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center">
+        <div style="margin-top: 1rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center">
             <h5 class="no-margin">Nível de transparência</h5>
             <h5 class="no-margin">{{ transparency.toString().concat('%') }}</h5>
         </div>
         <div class="range-opacity">
             <input ref="transparencyIn" style="margin-top: 15px" type="range" :value="transparency" :oninput="setPaperOpacity" />
-            
         </div>
     </div>
 </template>
