@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
+import OpacityRangeComponent from './opacity-range.vue';
 
 const paper = ref();
 const paperColor = ref('#ffffff');
-const transparencyIn = ref();
 const transparency = ref(100);
 
 onMounted(() => {
@@ -13,7 +13,8 @@ onMounted(() => {
 watch(
     () => paperColor.value,
     (value) => {
-        const transparencyEl = transparencyIn.value as HTMLDivElement;
+        const transparencyEl = document.querySelector('.range-opacity > input') as HTMLDivElement;
+        console.log(transparencyEl)
         transparencyEl.style.setProperty('box-shadow', `inset -90px 0px 58px ${value}, inset 4px 0px 23px rgba(255, 255, 255, 0)`);
     },
 );
@@ -38,6 +39,7 @@ const setPaperColor = (e: Event) => {
 
 const setPaperOpacity = (e: Event) => {
     const target = e.target as HTMLInputElement;
+    console.log(target)
     transparency.value = parseFloat(target.value);
     const newBgColor = generateBgColor(paper.value, target.value);
     paper.value.style.setProperty('background-color', newBgColor);
@@ -52,8 +54,6 @@ const setPaperOpacity = (e: Event) => {
             <h5 class="no-margin">Nível de transparência</h5>
             <h5 class="no-margin">{{ transparency.toString().concat('%') }}</h5>
         </div>
-        <div class="range-opacity">
-            <input ref="transparencyIn" style="margin-top: 15px" type="range" :value="transparency" :oninput="setPaperOpacity" />
-        </div>
+       <OpacityRangeComponent ref="transparencyIn" :oninput="setPaperOpacity" :value="transparency.toString()" />
     </div>
 </template>
