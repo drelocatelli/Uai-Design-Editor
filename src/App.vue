@@ -15,6 +15,7 @@ const statusStore = useStatusStore();
 focusStore.$subscribe((_, value) => {
   if(process.env.NODE_ENV === 'development') {
     console.log(`New Focus detected:`, value.lastFocusElement);
+    console.log(`Current action:`, value.action);
   }
   // set active element 
   if(value.lastFocusElement?.classList.contains('canvas'))

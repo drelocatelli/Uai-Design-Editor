@@ -1,6 +1,7 @@
 import { Node, NodeConfig } from "konva/lib/Node";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import Constants from "../class/constants";
 
 interface IActionType {
     name: IActionName;
@@ -16,11 +17,16 @@ const useFocusStore = defineStore('focus', () => {
     const action = ref<IActionType | undefined>({name: 'Ações'});
 
     function setFocus(element: HTMLElement) {
+        
         lastFocusElement.value = element;
     }
-
+    
     function setActionShape(payload: IActionType) {
-        action.value = payload;
+        if(!Constants.ignoreShapes.includes(payload.shape?.getClassName() as string)) {
+            action.value = payload;
+        } else {
+            resetAction();
+        }
     }
 
     function setAction(payload: IActionName) {

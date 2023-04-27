@@ -5,6 +5,7 @@ import useFocusStore from '../../../store/focus';
 import TextShapeComponent from './properties/text.vue';
 import DefaultShapeComponent from './properties/shape.vue';
 import BrushComponent from './properties/brush.vue';
+import CanvasComponent from './properties/canvas.vue';
 
 const focusStore = useFocusStore();
 const actions = computed(() => focusStore.action);
@@ -30,8 +31,11 @@ const setFocus = (e: MouseEvent) => {
                             <DefaultShapeComponent />
                         </template>
                     </template>
-                    <template v-if="actions.name == 'Opções de pintura'">
+                    <template v-else-if="actions.name == 'Opções de pintura'">
                         <BrushComponent />
+                    </template>
+                    <template v-else>
+                        <CanvasComponent />
                     </template>
                 </div>
             </div>

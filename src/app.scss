@@ -1,6 +1,6 @@
 @import 'fonts.scss';
 
-$elegant-blue:#80b9e1 ;
+$elegant-blue: #80b9e1;
 
 * {
     font-family: 'Inter', sans-serif;
@@ -32,6 +32,15 @@ body {
     flex-direction: column;
     width: 100%;
     height: 100vh;
+
+    ::-webkit-scrollbar {
+        width: 5px; /* largura da barra de rolagem */
+        background-color: #000000; /* cor de fundo da barra de rolagem */
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #535353; /* cor da thumb */
+    }
 
     a {
         color: #f9f9f9;
@@ -85,17 +94,18 @@ body {
 
             &.no-ctx {
                 width: auto;
-                padding: .8rem;
+                padding: 0.8rem;
                 &::after {
                     display: none;
                 }
             }
 
             &.active {
-                color:$elegant-blue;
+                color: $elegant-blue;
             }
 
-            &:hover, &.active {
+            &:hover,
+            &.active {
                 &:after {
                     color: $elegant-blue;
                 }
@@ -117,11 +127,10 @@ body {
                 align-self: center;
             }
 
-            &:hover, &.active {
+            &:hover,
+            &.active {
                 background-color: #323232;
             }
-
-            
         }
     }
 
@@ -162,7 +171,7 @@ body {
                 user-select: none;
                 align-self: center;
                 text-align: center;
-                
+
                 &:empty {
                     display: none;
                 }
@@ -219,7 +228,6 @@ body {
     justify-content: center;
     align-items: center;
 
-
     #canvas {
         position: absolute;
         width: -webkit-fill-available;
@@ -252,7 +260,8 @@ body {
                 outline: solid 3px $elegant-blue !important;
             }
 
-            &.rectangle, &.circle {
+            &.rectangle,
+            &.circle {
                 width: 100px;
                 height: 100px;
                 background-color: #487392;
