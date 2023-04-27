@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
+const paper = ref();
+const paperColor = ref("#ffffff");
 const transparency = ref(100);
+
+onMounted(() => {
+    paper.value = document.querySelector('.paper') as HTMLDivElement;
+});
 
 const generateBgColor = (element: HTMLElement, opacity: string) => {
     let currentBgColor = getComputedStyle(element).backgroundColor;
@@ -17,24 +23,23 @@ const generateBgColor = (element: HTMLElement, opacity: string) => {
 const setPaperColor = (e: Event) => {
     const target = e.target as HTMLInputElement;
     console.log(transparency);
-    const paper = document.querySelector('.paper') as HTMLDivElement;
-    paper.style.setProperty('background-color', target.value);
+    paper.value.style.setProperty('background-color', target.value);
+    paperColor.value = target.value;
 };
 
 const setPaperOpacity = (e: Event) => {
     const target = e.target as HTMLInputElement;
     transparency.value = parseFloat(target.value);
-    const paper = document.querySelector('.paper') as HTMLDivElement;
-    const newBgColor = generateBgColor(paper, target.value);
-    paper.style.setProperty('background-color', newBgColor);
+    const newBgColor = generateBgColor(paper.value, target.value);
+    paper.value.style.setProperty('background-color', newBgColor);
 };
 </script>
 
 <template>
     <div class="label">
         <h5>Cor da folha</h5>
-        <input class="fill" type="color" value="#ffffff" :oninput="setPaperColor" />
+        <input class="fill" type="color" :value="paperColor" :oninput="setPaperColor" />
         <h5>Transparência</h5>
-        <input style="margin-top:15px;" type="range" :value="transparency" :onchange="setPaperOpacity" />
+        <input style="margin-top:15px;" type="range" :value="transparency" :oninput="setPaperOpacity" />
     </div>
 </template>
