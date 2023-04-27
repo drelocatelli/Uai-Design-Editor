@@ -25,6 +25,7 @@ const setPaperColor = (e: Event) => {
     console.log(transparency);
     paper.value.style.setProperty('background-color', target.value);
     paperColor.value = target.value;
+    transparency.value = 100;
 };
 
 const setPaperOpacity = (e: Event) => {
