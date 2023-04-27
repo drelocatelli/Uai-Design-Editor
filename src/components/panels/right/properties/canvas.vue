@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 
 const paper = ref();
-const paperColor = ref("#ffffff");
+const paperColor = ref('#ffffff');
 const transparency = ref(100);
 
 onMounted(() => {
@@ -39,7 +39,10 @@ const setPaperOpacity = (e: Event) => {
     <div class="label">
         <h5>Cor da folha</h5>
         <input class="fill" type="color" :value="paperColor" :oninput="setPaperColor" />
-        <h5>Transparência</h5>
-        <input style="margin-top:15px;" type="range" :value="transparency" :oninput="setPaperOpacity" />
+        <div style="margin-top:1rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center">
+            <h5 class="no-margin">Transparência</h5>
+            <h5 class="no-margin">{{ transparency.toString().concat('%') }}</h5>
+        </div>
+        <input style="margin-top: 15px" type="range" :value="transparency" :oninput="setPaperOpacity" />
     </div>
 </template>
