@@ -14,7 +14,7 @@ watch(
     () => paperColor.value,
     (value) => {
         const transparencyEl = transparencyIn.value as HTMLDivElement;
-        transparencyEl.style.setProperty('box-shadow', `inset -90px 0px 38px ${value}, inset 4px 0px 23px rgba(255, 255, 255, 0)`);
+        transparencyEl.style.setProperty('box-shadow', `inset -90px 0px 58px ${value}, inset 4px 0px 23px rgba(255, 255, 255, 0)`);
     },
 );
 

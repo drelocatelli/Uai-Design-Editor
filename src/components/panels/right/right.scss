@@ -89,27 +89,31 @@
         input[type='range']::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 15px;
-            height: 15px;
+            width: 12px;
+            height: 40px;
             background: #71b0dd;
             cursor: pointer;
-            clip-path: circle();
+            border-radius: 10px;
+            //clip-path: circle();
         }
 
         input[type='range']::-moz-range-thumb {
-            clip-path: circle();
-            width: 20px;
-            height: 20px;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 50px;
             background: #71b0dd;
             cursor: pointer;
+            clip-path: circle();
         }
 
         .range-opacity {
             & input[type=range] {
+                height: 26px;
                 opacity: 1;
                 background-image: url('../../../assets/img/bg.png')!important;
                 background-color: transparent;
-                box-shadow: inset -48px 0px 18px #ffffff, inset 4px 0px 23px rgba(255, 255, 255, 0);
+                box-shadow: inset -48px 0px 58px #ffffff, inset 4px 0px 23px rgba(255, 255, 255, 0);
             }
         }
     }
