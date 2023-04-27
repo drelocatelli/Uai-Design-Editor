@@ -40,7 +40,7 @@ const setPaperOpacity = (e: Event) => {
         <h5>Cor da folha</h5>
         <input class="fill" type="color" :value="paperColor" :oninput="setPaperColor" />
         <div style="margin-top:1rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center">
-            <h5 class="no-margin">Transparência</h5>
+            <h5 class="no-margin">Nível de transparência</h5>
             <h5 class="no-margin">{{ transparency.toString().concat('%') }}</h5>
         </div>
         <input style="margin-top: 15px" type="range" :value="transparency" :oninput="setPaperOpacity" />
