@@ -88,7 +88,11 @@ class Trigger extends Environment {
 
     activateShapeProperties() {
         const focusStore = useFocusStore();
-        this.stage.on('mouseup', (e) => {
+        this.stage.on('mouseup touchend', (e) => {
+            focusStore.setActionShape({ name: 'Propriedades', shape: e.target });
+        });
+
+        this.stage.on('mousedown touchstart', (e) => {
             focusStore.setActionShape({ name: 'Propriedades', shape: e.target });
         });
     }

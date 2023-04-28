@@ -18,8 +18,8 @@ const isRect = computed(() => shape.value.className == 'Rect');
         <div class="label" v-if="isRect">
             <h5>Propriedades da forma</h5>
             <GridPropertiesComponent x="3" y="2">
-                <Position :shape="(shape as Shape)" position="x" />
-                <Position :shape="(shape as Shape)" position="y" />
+                <Position position="x" />
+                <Position position="y" />
                 <RoundedCorners :shape="(shape as Shape)" />
             </GridPropertiesComponent>
         </div>
