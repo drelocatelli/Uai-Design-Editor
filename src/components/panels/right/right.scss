@@ -10,7 +10,7 @@
 
     .label {
         font-size: 14px;
-        padding: 1rem 17px;
+        padding: 1rem 12px;
         border-bottom: 1px solid #333;
         overflow-x: hidden;
 
@@ -64,8 +64,6 @@
                 outline-color: #71b0dd;
             }
         }
-
-       
     }
 
     .textProperties {
@@ -98,8 +96,58 @@
             }
         }
     }
-}
 
+    .props {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        user-select: none;
+
+        > .item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: 30px;
+            border: 1px solid transparent;
+            padding: 5px;
+
+            & label {
+                font-size: 18px;
+                padding-right: 5px;
+                cursor: pointer;
+            }
+
+            & input {
+                width: 100% !important;
+                cursor: context-menu;
+
+                &:focus {
+                    outline: none!important;
+                }
+            }
+
+            & input[type='number']::-webkit-outer-spin-button,
+            & input[type='number']::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            & input[type='number'] {
+                -moz-appearance: textfield;
+                appearance: textfield;
+            }
+
+            &:nth-child(1),
+            &:nth-child(2) {
+                margin-top: 0.8rem;
+            }
+
+            &:hover {
+                border: 1px solid #525252;
+            }
+        }
+    }
+}
 
 input[type='range'] {
     -webkit-appearance: none;
@@ -144,10 +192,10 @@ input[type='range']::-moz-range-thumb {
 }
 
 .range-opacity {
-    & input[type=range] {
+    & input[type='range'] {
         height: 26px;
         opacity: 1;
-        background-image: url('../../../assets/img/bg.png')!important;
+        background-image: url('../../../assets/img/bg.png') !important;
         background-color: transparent;
         box-shadow: inset -48px 0px 58px #ffffff, inset 4px 0px 23px rgba(255, 255, 255, 0);
     }

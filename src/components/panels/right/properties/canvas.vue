@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import OpacityRangeComponent from './opacity-range.vue';
+import OpacityRangeComponent from './forms/opacity-range.vue';
 
 const paper = ref();
 const paperColor = ref('#ffffff');
@@ -39,7 +39,6 @@ const setPaperColor = (e: Event) => {
 
 const setPaperOpacity = (e: Event) => {
     const target = e.target as HTMLInputElement;
-    console.log(target)
     transparency.value = parseFloat(target.value);
     const newBgColor = generateBgColor(paper.value, target.value);
     paper.value.style.setProperty('background-color', newBgColor);
