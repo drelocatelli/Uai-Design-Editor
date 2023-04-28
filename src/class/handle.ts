@@ -40,12 +40,7 @@ class Handle {
         try {
             if(!('queryLocalFonts' in window)) throw new Error('Não foi possível detectar fonts');
             const response = await (window as any).queryLocalFonts();
-            const data = response.map((r: any) => r.family).reduce((unique: any, name: any) => {
-                if (!unique.includes(name)) {
-                    unique.push(name);
-                  }
-                  return unique;
-            }, []);
+            const data = new Set(response.map((r: any) => r.family)) as any;
             return [...Constants.availableFonts, ...data];
         } catch(err) {
             //@ts-ignore
