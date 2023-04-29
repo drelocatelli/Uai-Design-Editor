@@ -19,6 +19,6 @@ const setPosition = (e: Event) => {
 <template>
     <div class="item" :title="`Posição eixo ${props.position}`">
         <label :for="`position-${props.position}`" style="font-size: 13px; opacity: 0.6"> {{ props.position.toUpperCase() }} </label>
-        <input :id="`position-${props.position}`" :value="shapePosition" type="number" :oninput="setPosition" />
+        <input :id="`position-${props.position}`" :value="shapePosition" type="number" :oninput="setPosition" disabled />
     </div>
 </template>
